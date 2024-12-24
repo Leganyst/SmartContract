@@ -6,7 +6,7 @@ import "./ERC20.sol";
 contract Insurance {
     address public admin;
     ERC20 public insuranceToken;
-    address _tokenAddress = 0xc952F0877f7f8992b4Afd4d95b7EC4c2aB7F7f4E;
+    address _tokenAddress = 0x1915Ab3F49327F0E343e4A2759B168Bcdac9c944;
 
     // Предопределённые интервалы (в секундах)
     uint constant ONE_MONTH = 30 days;
@@ -36,6 +36,7 @@ contract Insurance {
     constructor() {
         admin = msg.sender;
         insuranceToken = ERC20(_tokenAddress);
+        emit Debug("constructor is created");
     }
 
     function createPolicy(
@@ -43,7 +44,7 @@ contract Insurance {
         uint premium,
         uint coverageAmount,
         uint durationType // Теперь вместо "duration" используется тип (0, 1, 2, 3)
-    ) public payable {
+    ) public {
         // Обрабатываем требования к заключению договора
         emit Debug("Started create policy function");
         require(policyHolder != address(0), "Invalid policy holder address");
@@ -70,13 +71,14 @@ contract Insurance {
             true,
             false
         );
-    
+
         // Логгируем
         emit PolicyCreated(nextPolicyId, policyHolder, coverageAmount, startDate, endDate);
 
         // Инкрементируем айди для следующего страхового договора
         nextPolicyId++;
     }
+
 
     function claim(uint policyId) public {
         InsuranceContract storage policy = policies[policyId];
